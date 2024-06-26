@@ -34,6 +34,8 @@ If not, then whose view differs from whom??
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
 
+In this area we are duplicating the process done in the master branch, with more data than previous by comparing similar tests and their results. This will sort through more data by correlating variables to data points. 
+
 # Results
 
 <!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
@@ -63,7 +65,25 @@ basicCC + geom_bar(stat="identity", position = "dodge")
 
 ## Now with The Most data (fewer variables gives more data points)
 
+```{r}
+dd2 <- mydata %>% group_by(race,cappun) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
 
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(dd2,aes(x=race,y=count,fill=cappun))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(dd2,aes(x=race,y=prcnt*100,fill=cappun)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+In this graph, the first slide displays the number of individuals categorized by races, white, black and other. The white race had the most with over 1500 reports, and the black
+and other races had less than 250 reports.
+In the last display the chart shows the percentage of the races in favor of capital punishment. Each category was compared to each other, the white was compared to support versus the opposition of capital punishment and was in favor of capital punishment by approximately 64%. The black race was in opposition, with a much lower percentage of around 57%.
+The other race was in favor of capital punishment with a near report for its opposition, the support percentage was around 55%.
 
 ### Numerical Descriptive Results
 
@@ -74,18 +94,61 @@ basicCC + geom_bar(stat="identity", position = "dodge")
 
 ## Now with More data
 
+```{r}
+table2 <- xtabs(~race + cappun, data=mydata)
+rowPerc(table2)
+colPerc(table2)
+```
 
+The summary displays that 65% of the white race was reported, 42% of the black race,
+and 55% of the other race were all in favor of capital punishment. This is compared to 34% of
+the white race in opposition of capital punishment,
+57% of the black race, and 44% of the other race.
 
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
 
-`
+```{r}
+fisherXY(mydata$race,mydata$cappun)
+```
+
+Using the Fisher test the numerical results give us insight into the differences between each comparison using the new data. The
+CHI test confirmed this information and provides a probability value of less than 000000000000000022 percent. This number is too
+89
+small.
+The Fisher test confirms the comparisons of each race. The white race when compared to the black race was significantly different. The resulting p value was.00000174. The white and other races were compared and the p value that resulted was 0.2565. In the last section of comparison, the black and other races were compared and the resulting p value was 0.06299. This observation of the
+Fisher test is a replication of the process used in the master branch.
+90 To evaluate this information, the hypothesis pertaining to the inclusion of race when determining favor of capital punishment, we are looking into both test' results. The p value of both the CHI Squared, and Fisher Test are not in favor of the results, and we
+now reject the null hypothesis.
+
+```{r}
+table2 <- xtabs(~race + cappun, data=mydata)
+rowPerc(table2)
+colPerc(table2)
+```
+
+
+
+The summary displays that 65% of the white race was reported, 42% of the black race,
+and 55% of the other race were all in favor of capital punishment. This is compared to 34% of
+the white race in opposition of capital punishment,
+57% of the black race, and 44% of the other race.
 
 
 ## More data version
+
+```{r}
+chisq.test(table2)
+chisqtestGC(table2)
+```
+
 
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+In the second branch we will also fully conclude our findings. In this portion of data we focused the information to better observe more specific data. This display of data was consistent with my original results and showed that even with more a narrowed search, the white race data was overwhelming in comparison to the other two.
+sections. This created a large difference of statistical
+inference. This was shown and evaluated through the use of numerical summaries and with multiple leveled tests. The Fisher test proved most useful and the p-value it provided was able to infer that our hypothesis would only support the theory that race does implicate a result in matters of capital punishment.
